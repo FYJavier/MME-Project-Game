@@ -2,31 +2,44 @@
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 const app = new PIXI.Application({
-    height: 480,
-    width: 320
+    width: 480,
+    height: 320
 });
 
 const tileSize = 16;
 
 let map = {
     width: 16,
-    height: 9,
+    height: 10,
     tiles: [
+        12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+        12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+        12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+        12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+        12, 12, 23, 12, 12, 12, 3, 4, 4, 5, 12, 12, 12, 12, 12, 12,
+        12, 12, 30, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+        12, 12, 30, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+        12, 12, 37, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
+    ],
+    collisions: [
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
     ]
 }
 
 document.body.appendChild(app.view);
 
-// Loads image with the object/variable 'bunny'
+// Loads image with the object/variable 'blob'
 app.loader.add('tileset', 'images/tileset-16x16.png').load((loader, resources) => {
     
     // Selects tiles on a 16 by 16 tileset.
@@ -40,18 +53,16 @@ app.loader.add('tileset', 'images/tileset-16x16.png').load((loader, resources) =
         );
     }
 
-    // Displays a tile depending on number in brackets.
-    const giraffe = new PIXI.Sprite(tileTextures[56]);
-    giraffe.scale.x = 4;
-    giraffe.scale.y = 4;
+    // Displays a 'blob' as a flask.
+    const blob = new PIXI.Sprite(tileTextures[56]);
+    blob.scale.x = 4;
+    blob.scale.y = 4;
     
-    // Sets position of image
-    giraffe.x = app.renderer.width / 2;
-    giraffe.y = app.renderer.height / 2;
+    // Sets position of 'blob'
+    blob.x = app.renderer.width / 2;
+    blob.y = app.renderer.height / 2;
 
-    // Rotates image around the center
-    giraffe.anchor.x = 0.5;
-    giraffe.anchor.y = 0.5;
+    let sky = new PIXI.TilingSprite(tileTextures[74], map.width * tileSize, map.height * tileSize);
 
     let background = new PIXI.Container();
     for (let y = 0; y < map.width; y++) {
@@ -64,13 +75,16 @@ app.loader.add('tileset', 'images/tileset-16x16.png').load((loader, resources) =
         }
     }
 
+    sky.scale.x = sky.scale.y = 2;
     background.scale.x = 2;
     background.scale.y = 2;
-    // Adds an image, in this case tileset-16x16.png, to the background
+    // Adds the 'sky' as a background.
+    app.stage.addChild(sky);
+    // Adds the 'background', in this case tileset-16x16.png, over the sky background.
     app.stage.addChild(background);
+    app.stage.addChild(blob);
 
     app.ticker.add(() => {
-        giraffe.rotation += 0.01;
     });
 })
 
