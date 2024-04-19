@@ -39,6 +39,7 @@ let map = {
 
 document.body.appendChild(app.view);
 
+app.loader.add("character", "https://live.staticflickr.com/65535/53663762504_532a8abc0e_m.jpg")
 // Loads image with the object/variable 'blob'
 app.loader.add('tileset', 'images/tileset-16x16.png').load((loader, resources) => {
     
@@ -53,10 +54,18 @@ app.loader.add('tileset', 'images/tileset-16x16.png').load((loader, resources) =
         );
     }
 
+    let characterFrames = [];
+    for (let i = 0; i < 8; i++) {
+        characterFrames[i] = new PIXI.Texture(
+            resources.character.texture,
+            new PIXI.Rectangle(i * tileSize, 0, tileSize, tileSize = 2)
+        );
+    }
+
     // Displays a 'blob' as a flask.
-    const blob = new PIXI.Sprite(tileTextures[56]);
-    blob.scale.x = 4;
-    blob.scale.y = 4;
+    const blob = new PIXI.Sprite(characterFrames[0]);
+    blob.scale.x = 2;
+    blob.scale.y = 2;
     
     // Sets position of 'blob'
     blob.x = app.renderer.width / 2;
@@ -82,6 +91,7 @@ app.loader.add('tileset', 'images/tileset-16x16.png').load((loader, resources) =
     app.stage.addChild(sky);
     // Adds the 'background', in this case tileset-16x16.png, over the sky background.
     app.stage.addChild(background);
+    // Adds 'blob' to the map
     app.stage.addChild(blob);
 
     app.ticker.add(() => {
