@@ -39,7 +39,6 @@ let map = {
 
 document.body.appendChild(app.view);
 
-app.loader.add("character", "https://live.staticflickr.com/65535/53663762504_532a8abc0e_m.jpg")
 // Loads image with the object/variable 'blob'
 app.loader.add('tileset', 'images/tileset-16x16.png')
 app.loader.add('character', 'images/character.png')
@@ -52,6 +51,14 @@ app.loader.load((loader, resources) => {
         tileTextures[i] = new PIXI.Texture(
             resources.tileset.texture,
             new PIXI.Rectangle(x * tileSize, y * tileSize, tileSize, tileSize)
+        );
+    }
+
+    let characterFrames = [];
+    for (let i = 0; i < 8; i++) {
+        characterFrames[i] = new PIXI.Texture(
+            resources.character.texture,
+            new PIXI.Rectangle(i * tileSize, 0, tileSize, tileSize * 2) 
         );
     }
 
