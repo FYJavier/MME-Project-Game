@@ -40,9 +40,10 @@ let map = {
 document.body.appendChild(app.view);
 
 // Loads image with the object/variable 'blob'
-app.loader.add('tileset', 'images/tileset-16x16.png').load((loader, resources) => {
-    
-    // Selects tiles on a 16 by 16 tileset.
+app.loader.add('tileset', 'images/tileset-16x16.png')
+app.loader.add('character', 'images/character.png')
+app.loader.load((loader, resources) => {
+    // Selects a 16 by 16 sprite from a tileset with 77 sprites.
     let tileTextures = [];
     for (let i = 0; i < 7 * 11; i++) {
         let x = i % 7;
@@ -53,10 +54,19 @@ app.loader.add('tileset', 'images/tileset-16x16.png').load((loader, resources) =
         );
     }
 
+    // Selects a 16 by 32 sprite from a tileset with 8 sprites.  
+    let characterFrames = [];
+    for (let i = 0; i < 8; i++) {
+        characterFrames[i] = new PIXI.Texture(
+            resources.character.texture,
+            new PIXI.Rectangle(i * tileSize, 0, tileSize, tileSize * 2)
+        );
+    }
+
     // Displays a 'blob' as a flask.
-    const blob = new PIXI.Sprite(tileTextures[56]);
-    blob.scale.x = 4;
-    blob.scale.y = 4;
+    const blob = new PIXI.Sprite(characterFrames[0]);
+    blob.scale.x = 2;
+    blob.scale.y = 2;
     
     // Sets position of 'blob'
     blob.x = app.renderer.width / 2;
@@ -84,7 +94,20 @@ app.loader.add('tileset', 'images/tileset-16x16.png').load((loader, resources) =
     app.stage.addChild(background);
     app.stage.addChild(blob);
 
+    // Character position
+    let character = {
+        x: 0, y: 0,
+        vx: 0, vy: 0 
+    };
+
+    // Character gravity
     app.ticker.add(() => {
+        blob.x = character.x;
+        blob.y = character.y;
+
+        character.vy = character.vy + 1;
+        character.x += character.vx;
+        character.y += character.vy;
     });
 })
 
