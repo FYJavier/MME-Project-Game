@@ -7,6 +7,7 @@ const app = new PIXI.Application({
 });
 
 const tileSize = 16;
+const SCALE = 2;
 
 let map = {
     width: 16,
@@ -23,7 +24,7 @@ let map = {
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
     ],
-    collisions: [
+    collision: [
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -35,6 +36,12 @@ let map = {
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
     ]
+}
+
+function testCollision(worldX, worldY) {
+    let mapX = Math.floor(worldX / tileSize / SCALE);
+    let mapY = Math.floor(worldY / tileSize / SCALE);
+    return map.collision[mapY * map.width + mapX]
 }
 
 document.body.appendChild(app.view);
@@ -64,12 +71,8 @@ app.loader.load((loader, resources) => {
 
     // Displays a 'blob' as a flask.
     const blob = new PIXI.Sprite(characterFrames[0]);
-    blob.scale.x = 2;
-    blob.scale.y = 2;
-    
-    // Sets position of 'blob'
-    blob.x = app.renderer.width / 2;
-    blob.y = app.renderer.height / 2;
+    blob.scale.x = SCALE;
+    blob.scale.y = SCALE;
 
     let sky = new PIXI.TilingSprite(tileTextures[74], map.width * tileSize, map.height * tileSize);
 
@@ -84,9 +87,9 @@ app.loader.load((loader, resources) => {
         }
     }
 
-    sky.scale.x = sky.scale.y = 2;
-    background.scale.x = 2;
-    background.scale.y = 2;
+    sky.scale.x = sky.scale.y = SCALE;
+    background.scale.x = SCALE;
+    background.scale.y = SCALE;
     // Adds the 'sky' as a background.
     app.stage.addChild(sky);
     // Adds the 'background', in this case tileset-16x16.png, over the sky background.
@@ -106,8 +109,23 @@ app.loader.load((loader, resources) => {
         blob.y = character.y;
 
         character.vy = character.vy + 1;
+
         character.x += character.vx;
-        character.y += character.vy;
+        
+        if (character.vy > 0) {
+            for (let i = 0; i < character.vy; i++) {
+                let testX1 = character.x;
+                let testX2 = character.x + tileSize * SCALE - 1;
+                let testY = character.y + tileSize * SCALE * 2;
+                if (testCollision(testX1, testY) || testCollision(testX2, testY)) {
+                    character.vy = 0;
+                    break;
+                }
+                character.y = character.y + 1; 
+            }
+        }
+        
+
     });
 })
 
