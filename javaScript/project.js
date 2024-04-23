@@ -44,12 +44,32 @@ function testCollision(worldX, worldY) {
     return map.collision[mapY * map.width + mapX]
 }
 
+class Keyboard {
+    constructor () {
+        this.pressed = {};
+    }
+
+    watch (el) {
+        el.addEventListener('keydown', function (e) {
+            this.pressed[e.key] = true;
+        })
+        el.addEventListener('keyup', function (e) {
+            this.pressed[e.key] = false;
+        })
+    }
+}
+
 document.body.appendChild(app.view);
 
 // Loads image with the object/variable 'blob'
 app.loader.add('tileset', 'images/tileset-16x16.png')
 app.loader.add('character', 'images/character.png')
+
 app.loader.load((loader, resources) => {
+    
+    let kb = new Keyboard();
+    kb.watch(app.view); 
+
     // Selects a 16 by 16 sprite from a tileset with 77 sprites.
     let tileTextures = [];
     for (let i = 0; i < 7 * 11; i++) {
@@ -112,6 +132,7 @@ app.loader.load((loader, resources) => {
 
         character.x += character.vx;
         
+        // Collision detection
         if (character.vy > 0) {
             for (let i = 0; i < character.vy; i++) {
                 let testX1 = character.x;
