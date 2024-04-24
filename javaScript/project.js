@@ -50,16 +50,18 @@ class Keyboard {
     }
 
     watch (el) {
-        el.addEventListener('keydown', function (e) {
+        el.addEventListener('keydown', (e) => {
+            console.log(e.key);
             this.pressed[e.key] = true;
         })
-        el.addEventListener('keyup', function (e) {
+        el.addEventListener('keyup', (e) => {
             this.pressed[e.key] = false;
         })
     }
 }
 
 document.body.appendChild(app.view);
+app.view.setAttribute('tabindex', 0);
 
 // Loads image with the object/variable 'blob'
 app.loader.add('tileset', 'images/tileset-16x16.png')
@@ -132,6 +134,11 @@ app.loader.load((loader, resources) => {
 
         character.x += character.vx;
         
+        let touchingGround = testCollision(
+            character.x, 
+            character.y + tileSize * SCALE * 2 + 1
+        );
+
         // Collision detection
         if (character.vy > 0) {
             for (let i = 0; i < character.vy; i++) {
@@ -145,7 +152,13 @@ app.loader.load((loader, resources) => {
                 character.y = character.y + 1; 
             }
         }
-        
+        if (character.vy < 0) {
+            character.y += character.vy;
+        }
+
+        if (kb.pressed.ArrowUp) {
+            character.vy = -10;
+        }
 
     });
 })
