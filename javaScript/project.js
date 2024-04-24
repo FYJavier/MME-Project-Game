@@ -160,6 +160,12 @@ app.loader.load((loader, resources) => {
             character.vy = -10;
         }
 
+        if(!touchingGround) {
+            blob.texture = characterFrames[1];
+        } else {
+            blob.texture = characterFrames[0];
+        }
+
     });
 })
 
