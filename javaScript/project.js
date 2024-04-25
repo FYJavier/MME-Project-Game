@@ -122,11 +122,12 @@ app.loader.load((loader, resources) => {
     // Character position
     let character = {
         x: 0, y: 0,
-        vx: 0, vy: 0 
+        vx: 0, vy: 0,
+        direction: 0
     };
 
     // Character gravity
-    app.ticker.add(() => {
+    app.ticker.add((time) => {
         blob.x = character.x;
         blob.y = character.y;
 
@@ -156,15 +157,38 @@ app.loader.load((loader, resources) => {
             character.y += character.vy;
         }
 
-        if (kb.pressed.ArrowUp) {
-            character.vy = -10;
+        if (kb.pressed.ArrowUp && touchingGround) {
+            character.vy = -16;
         }
 
-        if(!touchingGround) {
-            blob.texture = characterFrames[1];
-        } else {
-            blob.texture = characterFrames[0];
+        if (kb.pressed.ArrowRight) {
+            character.vx = Math.min(10, character.vx + 2);
         }
+
+        if (kb.pressed.ArrowLeft) {
+            character.vx = Math.max(-10, character.vx - 2);
+        }
+
+        if (character.vx > 0) {
+            character.direction = 0;
+            character.vx -= 1;
+        }
+        if (character.vx < 0){
+            character.direction = 4;
+            character.vx += 1;
+        }
+
+        // Animation!
+        if(!touchingGround) {
+            blob.texture = characterFrames[character.direction + 1];
+        } else {
+            if (character.vx !== 0) {
+                blob.texture = characterFrames[(Math.floor(Date.now() / 100) % 3) + character.direction];
+            } else {
+                blob.texture = characterFrames[character.direction];
+            }
+        }
+        
 
     });
 })
