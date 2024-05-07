@@ -16,7 +16,7 @@ let map = {
         12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
         12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
         12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
-        12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
+        12, 12, 12, 12, 12, 12, 54, 54, 54, 54, 12, 12, 12, 12, 12, 12,
         12, 12, 23, 12, 12, 12, 3, 4, 4, 5, 12, 12, 12, 12, 12, 12,
         12, 12, 30, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
         12, 12, 30, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12,
@@ -35,6 +35,18 @@ let map = {
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+    ],
+    coins: [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     ]
 }
 
@@ -42,6 +54,12 @@ function testCollision(worldX, worldY) {
     let mapX = Math.floor(worldX / tileSize / SCALE);
     let mapY = Math.floor(worldY / tileSize / SCALE);
     return map.collision[mapY * map.width + mapX]
+}
+
+function checkCoin(worldX, worldY) {
+    let mapX = Math.floor(worldX / tileSize / SCALE);
+    let mapY = Math.floor(worldY / tileSize / SCALE);
+    return map.coins[mapY * map.width + mapX]
 }
 
 class Keyboard {
@@ -153,6 +171,18 @@ app.loader.load((loader, resources) => {
                 character.y = character.y + 1; 
             }
         }
+
+        if (character.vy > 0) {
+            for (let i = 0; i < character.vy; i++) {
+                let testX1 = character.x;
+                let testX2 = character.x + tileSize * SCALE - 1;
+                let testY = character.y + tileSize * SCALE * 2;
+                if (checkCoin(testX1, testY) || checkCoin(testX2, testY)) {
+                    break;
+                }
+            }
+        }
+
         if (character.vy < 0) {
             character.y += character.vy;
         }
