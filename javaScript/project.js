@@ -178,6 +178,8 @@ app.loader.load((loader, resources) => {
                 let testX2 = character.x + tileSize * SCALE - 1;
                 let testY = character.y + tileSize * SCALE * 2;
                 if (checkCoin(testX1, testY) || checkCoin(testX2, testY)) {
+                    map.tiles[0] = 25
+                    app.stage.addChild(background)
                     break;
                 }
             }
